@@ -1,14 +1,10 @@
 use bevy::prelude::*;
 
-// use <projectname>::<ProjectnamePlugin>;
+use bevy_template::ProjectnamePlugin;
 
 fn main() {
     App::new()
-        .add_plugins((
-            DefaultPlugins,
-            ViewportPlugin,
-            // <ProjectnamePlugin>,
-        ))
+        .add_plugins((DefaultPlugins, ViewportPlugin, ProjectnamePlugin))
         .add_systems(Update, (close_on_esc))
         .run();
 }
