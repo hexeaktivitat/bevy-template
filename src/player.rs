@@ -32,7 +32,7 @@ struct PlayerBundle {
 // player specific systems
 
 fn player_setup(mut commands: Commands, server: Res<AssetServer>) {
-    let player_sprite: Handle<Image> = server.load("change.png");
+    let player_sprite: Handle<Image> = server.load("default.png");
     let player = PlayerBundle {
         tag: PlayerTag,
         sprite: SpriteBundle {
