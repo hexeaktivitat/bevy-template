@@ -49,6 +49,7 @@ fn player_input(
     keys: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
     mut ev_pause: EventWriter<PauseEvent>,
+    mut ev_menu: EventWriter<MenuEvent>,
     mut query: Query<(&mut Transform, Entity, &Pause), With<PlayerTag>>,
 ) {
     for (mut position, _entity, pause) in query.iter_mut() {
@@ -56,23 +57,23 @@ fn player_input(
 
         for key in keys.get_pressed() {
             match key {
-                KeyCode::ArrowDown => position.translation.y -= translate,
-                KeyCode::ArrowLeft => position.translation.x -= translate,
-                KeyCode::ArrowRight => position.translation.x += translate,
-                KeyCode::ArrowUp => position.translation.y += translate,
+                KeyCode::ArrowDown | KeyCode::KeyS => position.translation.y -= translate,
+                KeyCode::ArrowLeft | KeyCode::KeyA => position.translation.x -= translate,
+                KeyCode::ArrowRight | KeyCode::KeyD => position.translation.x += translate,
+                KeyCode::ArrowUp | KeyCode::KeyW => position.translation.y += translate,
                 _ => {}
             }
         }
 
         for key in keys.get_just_pressed() {
-            if key == &KeyCode::KeyW {}
-            if key == &KeyCode::KeyA {}
-            if key == &KeyCode::KeyS {}
-            if key == &KeyCode::KeyD {}
             if key == &KeyCode::Space {}
             if key == &KeyCode::Enter {}
             if key == &KeyCode::Backquote {
                 ev_pause.send(PauseEvent);
+            }
+            if key == &KeyCode::Escape {
+                ev_pause.send(PauseEvent);
+                ev_menu.send(MenuEvent);
             }
         }
     }
@@ -91,6 +92,22 @@ fn pause(
         match state.get() {
             PauseState::Unpaused => next_state.set(PauseState::Paused),
             PauseState::Paused => next_state.set(PauseState::Unpaused),
+        }
+    }
+}
+
+#[derive(Event)]
+struct MenuEvent;
+
+fn menu(
+    mut ev_menu: EventReader<MenuEvent>,
+    state: Res<State<ApplicationState>>,
+    mut next_state: ResMut<NextState<ApplicationState>>,
+) {
+    for _ev in ev_menu.read() {
+        match state.get() {
+            ApplicationState::Menu => next_state.set(ApplicationState::InGame),
+            _ => next_state.set(ApplicationState::Menu),
         }
     }
 }
