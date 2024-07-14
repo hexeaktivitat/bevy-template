@@ -1,5 +1,5 @@
 use bevy::{
-    color::palettes::css::{DARK_SEA_GREEN, LAVENDER},
+    color::palettes::css::{BLACK, DARK_SEA_GREEN, LAVENDER},
     prelude::*,
     sprite::Anchor,
 };
@@ -180,7 +180,7 @@ fn interact_menu(
             },
             Interaction::Hovered => {
                 *color = BackgroundColor(Color::Srgba(DARK_SEA_GREEN));
-                *border = BorderColor(Color::Srgba(LAVENDER));
+                *border = BorderColor(Color::Srgba(BLACK));
             }
             Interaction::None => {
                 *color = BackgroundColor(Color::Srgba(LAVENDER));
