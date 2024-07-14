@@ -1,10 +1,11 @@
 use bevy::prelude::*;
 use bevy_console::{AddConsoleCommand, ConsoleCommand, ConsolePlugin};
 use clap::Parser;
+use input::{InputPlugin, InputSet};
+use player::{PlayerPlugin, PlayerSet};
+use ui::{UiPauseSet, UiPlugin, UiSet};
 
-use crate::player::{PlayerPlugin, PlayerSet};
-use crate::ui::UiSet;
-
+mod input;
 mod player;
 mod ui;
 
@@ -18,21 +19,25 @@ impl Plugin for ProjectnamePlugin {
             .init_state::<PauseState>();
 
         app.configure_sets(
-            Startup,
-            (
-                PlayerSet
-                    .run_if(in_state(ApplicationState::Menu))
-                    .run_if(in_state(ApplicationState::InGame))
-                    .run_if(in_state(ApplicationState::Editor)),
-                UiSet.run_if(in_state(ApplicationState::Menu)),
-            ),
+            OnEnter(ApplicationState::InGame),
+            PlayerSet
+                // .run_if(in_state(ApplicationState::Loading))
+                // .run_if(in_state(ApplicationState::Menu))
+                .run_if(in_state(ApplicationState::InGame)),
+        );
+        app.configure_sets(
+            OnEnter(ApplicationState::Menu),
+            UiSet.run_if(in_state(ApplicationState::Menu)),
         );
         app.configure_sets(
             Update,
-            PlayerSet
-                .run_if(in_state(ApplicationState::Menu))
-                .run_if(in_state(ApplicationState::InGame))
-                .run_if(in_state(ApplicationState::Editor)),
+            (
+                PlayerSet
+                    .run_if(in_state(ApplicationState::InGame))
+                    .run_if(in_state(PauseState::Unpaused)),
+                InputSet,
+                UiPauseSet.run_if(in_state(PauseState::Paused)),
+            ),
         );
         app.configure_sets(
             FixedUpdate,
@@ -43,7 +48,7 @@ impl Plugin for ProjectnamePlugin {
         // app.insert_resource(ResourceStruct {})
 
         // plugins
-        app.add_plugins((PlayerPlugin));
+        app.add_plugins((PlayerPlugin, UiPlugin, InputPlugin));
 
         // systems
 
@@ -72,7 +77,6 @@ pub enum ApplicationState {
     Loading,
     Menu,
     InGame,
-    Editor,
 }
 
 #[derive(States, Debug, Default, Clone, PartialEq, Eq, Hash)]

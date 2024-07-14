@@ -9,24 +9,18 @@ pub struct PlayerSet;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, (player_setup))
-            .add_systems(Update, (player_input, pause));
+        app.add_systems(Startup, (player_setup).in_set(PlayerSet))
+            .add_systems(Update, (player_input).in_set(PlayerSet));
     }
 }
 
 #[derive(Component)]
 struct PlayerTag;
 
-#[derive(Component)]
-pub struct Pause {
-    pub active: bool,
-}
-
 #[derive(Bundle)]
 struct PlayerBundle {
     tag: PlayerTag,
     sprite: SpriteBundle,
-    active: Pause,
 }
 
 // player specific systems
@@ -40,7 +34,6 @@ fn player_setup(mut commands: Commands, server: Res<AssetServer>) {
             transform: Transform::from_xyz(0., 0., 100.),
             ..default()
         },
-        active: Pause { active: false },
     };
     commands.spawn(player);
 }
@@ -48,11 +41,9 @@ fn player_setup(mut commands: Commands, server: Res<AssetServer>) {
 fn player_input(
     keys: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
-    mut ev_pause: EventWriter<PauseEvent>,
-    mut ev_menu: EventWriter<MenuEvent>,
-    mut query: Query<(&mut Transform, Entity, &Pause), With<PlayerTag>>,
+    mut query: Query<(&mut Transform, Entity), With<PlayerTag>>,
 ) {
-    for (mut position, _entity, pause) in query.iter_mut() {
+    for (mut position, _entity) in query.iter_mut() {
         let translate = 250. * time.delta_seconds();
 
         for key in keys.get_pressed() {
@@ -63,51 +54,6 @@ fn player_input(
                 KeyCode::ArrowUp | KeyCode::KeyW => position.translation.y += translate,
                 _ => {}
             }
-        }
-
-        for key in keys.get_just_pressed() {
-            if key == &KeyCode::Space {}
-            if key == &KeyCode::Enter {}
-            if key == &KeyCode::Backquote {
-                ev_pause.send(PauseEvent);
-            }
-            if key == &KeyCode::Escape {
-                ev_pause.send(PauseEvent);
-                ev_menu.send(MenuEvent);
-            }
-        }
-    }
-}
-
-// player specific events
-#[derive(Event)]
-struct PauseEvent;
-
-fn pause(
-    mut ev_pause: EventReader<PauseEvent>,
-    state: Res<State<PauseState>>,
-    mut next_state: ResMut<NextState<PauseState>>,
-) {
-    for _ev in ev_pause.read() {
-        match state.get() {
-            PauseState::Unpaused => next_state.set(PauseState::Paused),
-            PauseState::Paused => next_state.set(PauseState::Unpaused),
-        }
-    }
-}
-
-#[derive(Event)]
-struct MenuEvent;
-
-fn menu(
-    mut ev_menu: EventReader<MenuEvent>,
-    state: Res<State<ApplicationState>>,
-    mut next_state: ResMut<NextState<ApplicationState>>,
-) {
-    for _ev in ev_menu.read() {
-        match state.get() {
-            ApplicationState::Menu => next_state.set(ApplicationState::InGame),
-            _ => next_state.set(ApplicationState::Menu),
         }
     }
 }

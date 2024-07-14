@@ -1,19 +1,25 @@
 use bevy::{
     color::palettes::css::{DARK_SEA_GREEN, LAVENDER},
     prelude::*,
+    sprite::Anchor,
 };
 
-use crate::ApplicationState;
+use crate::{ApplicationState, PauseState};
 
 #[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct UiSet;
+
+#[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
+pub struct UiPauseSet;
 
 pub struct UiPlugin;
 
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, menu_setup.in_set(UiSet))
+        app.add_systems(OnEnter(ApplicationState::Menu), menu_setup.in_set(UiSet))
             .add_systems(Update, (clear_menu, main_menu).in_set(UiSet));
+        app.add_systems(OnEnter(PauseState::Paused), pause_screen.in_set(UiPauseSet))
+            .add_systems(OnExit(PauseState::Paused), clear_pause.in_set(UiPauseSet));
     }
 }
 
@@ -91,5 +97,25 @@ fn clear_menu(
         for entity in query.iter_mut() {
             commands.entity(entity).despawn();
         }
+    }
+}
+
+fn pause_screen(mut commands: Commands, server: Res<AssetServer>) {
+    commands.spawn(Text2dBundle {
+        text: Text::from_section(
+            "PAUSED",
+            TextStyle {
+                font_size: 32.,
+                ..default()
+            },
+        ),
+        transform: Transform::from_translation(Vec3::new(4., 0., 104.)),
+        ..default()
+    });
+}
+
+fn clear_pause(mut commands: Commands, mut query: Query<Entity, With<Text>>) {
+    for entity in query.iter_mut() {
+        commands.entity(entity).despawn();
     }
 }
