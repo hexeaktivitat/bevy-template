@@ -41,7 +41,6 @@ fn pause(
     mut next_state: ResMut<NextState<PauseState>>,
 ) {
     for _ev in ev_pause.read() {
-        println!("{:?}", state.get());
         match state.get() {
             PauseState::Unpaused => next_state.set(PauseState::Paused),
             PauseState::Paused => next_state.set(PauseState::Unpaused),
@@ -58,7 +57,6 @@ fn menu(
     mut next_state: ResMut<NextState<ApplicationState>>,
 ) {
     for _ev in ev_menu.read() {
-        println!("{:?}", state.get());
         match state.get() {
             ApplicationState::Menu => next_state.set(ApplicationState::InGame),
             _ => next_state.set(ApplicationState::Menu),

@@ -51,8 +51,15 @@ impl Plugin for ProjectnamePlugin {
         app.add_plugins((PlayerPlugin, UiPlugin, InputPlugin));
 
         // systems
+        app.add_systems(OnEnter(ApplicationState::Exit), exit_game);
 
         // console comands
+    }
+}
+
+fn exit_game(mut commands: Commands, window: Query<Entity, With<Window>>) {
+    for game_app in window.iter() {
+        commands.entity(game_app).despawn();
     }
 }
 
@@ -77,6 +84,7 @@ pub enum ApplicationState {
     Loading,
     Menu,
     InGame,
+    Exit,
 }
 
 #[derive(States, Debug, Default, Clone, PartialEq, Eq, Hash)]
