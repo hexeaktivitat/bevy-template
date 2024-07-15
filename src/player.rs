@@ -1,6 +1,5 @@
 use bevy::{input::keyboard::KeyCode, prelude::*};
 
-
 pub struct PlayerPlugin;
 
 #[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
