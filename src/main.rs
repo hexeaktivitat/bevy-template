@@ -1,10 +1,20 @@
+#![allow(clippy::too_many_arguments, clippy::type_complexity)]
+
+use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 
 use bevy_template::ProjectnamePlugin;
 
 fn main() {
     App::new()
-        .add_plugins((DefaultPlugins, ViewportPlugin, ProjectnamePlugin))
+        .add_plugins((
+            DefaultPlugins.set(AssetPlugin {
+                meta_check: AssetMetaCheck::Never,
+                ..default()
+            }),
+            ViewportPlugin,
+            ProjectnamePlugin,
+        ))
         // .add_systems(Update, (close_on_esc))
         .run();
 }
@@ -23,20 +33,3 @@ fn camera_setup(mut commands: Commands, _asset_server: Res<AssetServer>) {
 }
 
 fn field_setup(mut commands: Commands, _asset_server: Res<AssetServer>) {}
-
-// for rapid prototyping before esc menu added
-fn close_on_esc(
-    mut commands: Commands,
-    focused_windows: Query<(Entity, &Window)>,
-    input: Res<ButtonInput<KeyCode>>,
-) {
-    for (window, focus) in focused_windows.iter() {
-        if !focus.focused {
-            continue;
-        }
-
-        if input.just_pressed(KeyCode::Escape) {
-            commands.entity(window).despawn();
-        }
-    }
-}
