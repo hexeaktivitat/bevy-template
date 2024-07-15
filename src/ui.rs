@@ -154,7 +154,6 @@ fn main_menu(
     }
 }
 
-#[allow(clippy::type_complexity)]
 fn interact_menu(
     mut interaction_query: Query<
         (
