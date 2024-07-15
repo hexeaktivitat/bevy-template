@@ -34,7 +34,7 @@ enum MenuOptions {
     Exit,
 }
 
-fn menu_setup(mut commands: Commands, server: Res<AssetServer>) {
+fn menu_setup(mut commands: Commands, _server: Res<AssetServer>) {
     let font_size = 24.0;
 
     commands
@@ -164,13 +164,11 @@ fn interact_menu(
         ),
         (Changed<Interaction>, With<Button>),
     >,
-    mut text_query: Query<&mut Text>,
-    state: Res<State<ApplicationState>>,
     mut next_state: ResMut<NextState<ApplicationState>>,
 ) {
-    for (interaction, menu_options, mut color, mut border, children) in interaction_query.iter_mut()
+    for (interaction, menu_options, mut color, mut border, _children) in
+        interaction_query.iter_mut()
     {
-        let text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
             Interaction::Pressed => match menu_options {
                 MenuOptions::Start => next_state.set(ApplicationState::InGame),
@@ -201,7 +199,7 @@ fn clear_menu(
     }
 }
 
-fn pause_screen(mut commands: Commands, server: Res<AssetServer>) {
+fn pause_screen(mut commands: Commands, _server: Res<AssetServer>) {
     commands.spawn(Text2dBundle {
         text: Text::from_section(
             "PAUSED",

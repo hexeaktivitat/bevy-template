@@ -20,8 +20,6 @@ fn game_input(
     mut ev_menu: EventWriter<MenuEvent>,
 ) {
     for key in keys.get_just_pressed() {
-        key == &KeyCode::Space;
-        key == &KeyCode::Enter;
         if key == &KeyCode::Backquote {
             ev_pause.send(PauseEvent);
         }

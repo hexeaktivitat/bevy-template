@@ -1,7 +1,7 @@
-#![allow(clippy::too_many_arguments, clippy::type_complexity)]
+#![allow(clippy::too_many_arguments, clippy::type_complexity, dead_code)]
 
 use bevy::prelude::*;
-use bevy_console::{ConsoleCommand};
+use bevy_console::ConsoleCommand;
 use clap::Parser;
 use input::{InputPlugin, InputSet};
 use player::{PlayerPlugin, PlayerSet};
