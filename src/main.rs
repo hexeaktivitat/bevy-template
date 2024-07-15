@@ -32,4 +32,4 @@ fn camera_setup(mut commands: Commands, _asset_server: Res<AssetServer>) {
     commands.spawn(Camera2dBundle::default());
 }
 
-fn field_setup(mut commands: Commands, _asset_server: Res<AssetServer>) {}
+fn field_setup(commands: Commands, _asset_server: Res<AssetServer>) {}

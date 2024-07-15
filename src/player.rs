@@ -1,6 +1,5 @@
 use bevy::{input::keyboard::KeyCode, prelude::*};
 
-use crate::{ApplicationState, PauseState};
 
 pub struct PlayerPlugin;
 

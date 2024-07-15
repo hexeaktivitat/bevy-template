@@ -1,7 +1,6 @@
 use bevy::{
     color::palettes::css::{BLACK, DARK_SEA_GREEN, LAVENDER},
     prelude::*,
-    sprite::Anchor,
 };
 
 use crate::{ApplicationState, PauseState};
@@ -171,7 +170,7 @@ fn interact_menu(
 ) {
     for (interaction, menu_options, mut color, mut border, children) in interaction_query.iter_mut()
     {
-        let mut text = text_query.get_mut(children[0]).unwrap();
+        let text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
             Interaction::Pressed => match menu_options {
                 MenuOptions::Start => next_state.set(ApplicationState::InGame),
