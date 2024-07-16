@@ -1,5 +1,7 @@
 use bevy::{input::keyboard::KeyCode, prelude::*};
 
+use crate::ApplicationState;
+
 pub struct PlayerPlugin;
 
 #[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
@@ -7,8 +9,11 @@ pub struct PlayerSet;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, (player_setup).in_set(PlayerSet))
-            .add_systems(Update, (player_input).in_set(PlayerSet));
+        app.add_systems(
+            OnEnter(ApplicationState::Loading),
+            (player_setup).in_set(PlayerSet),
+        )
+        .add_systems(Update, (player_input).in_set(PlayerSet));
     }
 }
 
@@ -23,7 +28,15 @@ struct PlayerBundle {
 
 // player specific systems
 
-fn player_setup(mut commands: Commands, server: Res<AssetServer>) {
+fn player_setup(
+    mut commands: Commands,
+    server: Res<AssetServer>,
+    previous_player: Query<Entity, With<PlayerTag>>,
+    mut next_state: ResMut<NextState<ApplicationState>>,
+) {
+    for entity in previous_player.iter() {
+        commands.entity(entity).despawn();
+    }
     let player_sprite: Handle<Image> = server.load("default.png");
     let player = PlayerBundle {
         tag: PlayerTag,
@@ -34,6 +47,7 @@ fn player_setup(mut commands: Commands, server: Res<AssetServer>) {
         },
     };
     commands.spawn(player);
+    next_state.set(ApplicationState::InGame);
 }
 
 fn player_input(

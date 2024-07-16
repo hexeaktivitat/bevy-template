@@ -171,7 +171,7 @@ fn interact_menu(
     {
         match *interaction {
             Interaction::Pressed => match menu_options {
-                MenuOptions::Start => next_state.set(ApplicationState::InGame),
+                MenuOptions::Start => next_state.set(ApplicationState::Loading),
                 MenuOptions::Resume => next_state.set(ApplicationState::InGame),
                 MenuOptions::Exit => next_state.set(ApplicationState::Exit),
             },
