@@ -41,13 +41,11 @@ impl Plugin for ProjectnamePlugin {
                 PauseSet.run_if(in_state(PauseState::Paused)),
             ),
         );
-        app.configure_sets(
-            FixedUpdate,
-            (MenuSet.run_if(in_state(ApplicationState::Menu)),),
-        );
+        app.configure_sets(Update, (MenuSet.run_if(in_state(ApplicationState::Menu)),));
 
         // resources
         // app.insert_resource(ResourceStruct {})
+        app.insert_resource(Time::<Fixed>::from_hz(60.0));
 
         // plugins
         app.add_plugins((PlayerPlugin, MenuPlugin, InputPlugin));
