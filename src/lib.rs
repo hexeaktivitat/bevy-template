@@ -4,12 +4,12 @@ use bevy::prelude::*;
 use bevy_console::ConsoleCommand;
 use clap::Parser;
 use input::{InputPlugin, InputSet};
+use menu::{MenuPlugin, MenuSet, PauseSet};
 use player::{PlayerPlugin, PlayerSet};
-use ui::{UiPauseSet, UiPlugin, UiSet};
 
 mod input;
+mod menu;
 mod player;
-mod ui;
 
 pub struct ProjectnamePlugin;
 
@@ -29,7 +29,7 @@ impl Plugin for ProjectnamePlugin {
         );
         app.configure_sets(
             OnEnter(ApplicationState::Menu),
-            UiSet.run_if(in_state(ApplicationState::Menu)),
+            MenuSet.run_if(in_state(ApplicationState::Menu)),
         );
         app.configure_sets(
             Update,
@@ -38,19 +38,19 @@ impl Plugin for ProjectnamePlugin {
                     .run_if(in_state(ApplicationState::InGame))
                     .run_if(in_state(PauseState::Unpaused)),
                 InputSet,
-                UiPauseSet.run_if(in_state(PauseState::Paused)),
+                PauseSet.run_if(in_state(PauseState::Paused)),
             ),
         );
         app.configure_sets(
             FixedUpdate,
-            (UiSet.run_if(in_state(ApplicationState::Menu)),),
+            (MenuSet.run_if(in_state(ApplicationState::Menu)),),
         );
 
         // resources
         // app.insert_resource(ResourceStruct {})
 
         // plugins
-        app.add_plugins((PlayerPlugin, UiPlugin, InputPlugin));
+        app.add_plugins((PlayerPlugin, MenuPlugin, InputPlugin));
 
         // systems
         app.add_systems(OnEnter(ApplicationState::Exit), exit_game);

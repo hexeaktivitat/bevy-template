@@ -6,19 +6,22 @@ use bevy::{
 use crate::{ApplicationState, PauseState};
 
 #[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct UiSet;
+pub struct MenuSet;
 
 #[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct UiPauseSet;
+pub struct PauseSet;
 
-pub struct UiPlugin;
+pub struct MenuPlugin;
 
-impl Plugin for UiPlugin {
+impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(ApplicationState::Menu), menu_setup.in_set(UiSet))
-            .add_systems(Update, (clear_menu, main_menu, interact_menu).in_set(UiSet));
-        app.add_systems(OnEnter(PauseState::Paused), pause_screen.in_set(UiPauseSet))
-            .add_systems(OnExit(PauseState::Paused), clear_pause.in_set(UiPauseSet));
+        app.add_systems(OnEnter(ApplicationState::Menu), menu_setup.in_set(MenuSet))
+            .add_systems(
+                Update,
+                (clear_menu, main_menu, interact_menu).in_set(MenuSet),
+            );
+        app.add_systems(OnEnter(PauseState::Paused), pause_screen.in_set(PauseSet))
+            .add_systems(OnExit(PauseState::Paused), clear_pause.in_set(PauseSet));
     }
 }
 
