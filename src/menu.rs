@@ -18,7 +18,7 @@ impl Plugin for MenuPlugin {
         app.add_systems(OnEnter(ApplicationState::Menu), menu_setup.in_set(MenuSet))
             .add_systems(
                 Update,
-                (clear_menu, main_menu, interact_menu).in_set(MenuSet),
+                (clear_menu, game_menu, interact_game_menu).in_set(MenuSet),
             );
         app.add_systems(OnEnter(PauseState::Paused), pause_screen.in_set(PauseSet))
             .add_systems(OnExit(PauseState::Paused), clear_pause.in_set(PauseSet));
@@ -142,7 +142,7 @@ fn menu_setup(mut commands: Commands, _server: Res<AssetServer>) {
         });
 }
 
-fn main_menu(
+fn game_menu(
     mut query: Query<(&MenuOptions, &Children), With<Button>>,
     mut text_query: Query<&mut Text>,
 ) {
@@ -156,7 +156,7 @@ fn main_menu(
     }
 }
 
-fn interact_menu(
+fn interact_game_menu(
     mut interaction_query: Query<
         (
             &Interaction,
