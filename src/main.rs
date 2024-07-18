@@ -1,6 +1,7 @@
 #![allow(clippy::too_many_arguments, clippy::type_complexity)]
 
 use bevy::asset::AssetMetaCheck;
+use bevy::audio::{AudioPlugin, Volume};
 use bevy::prelude::*;
 
 use bevy_template::ProjectnamePlugin;
@@ -8,10 +9,28 @@ use bevy_template::ProjectnamePlugin;
 fn main() {
     App::new()
         .add_plugins((
-            DefaultPlugins.set(AssetPlugin {
-                meta_check: AssetMetaCheck::Never,
-                ..default()
-            }),
+            DefaultPlugins
+                .set(AssetPlugin {
+                    meta_check: AssetMetaCheck::Never,
+                    ..default()
+                })
+                .set(WindowPlugin {
+                    primary_window: Window {
+                        title: "bevy template".to_string(),
+                        canvas: Some("#bevy".to_string()),
+                        fit_canvas_to_parent: true,
+                        prevent_default_event_handling: true,
+                        ..default()
+                    }
+                    .into(),
+                    ..default()
+                })
+                .set(AudioPlugin {
+                    global_volume: GlobalVolume {
+                        volume: Volume::new(0.3),
+                    },
+                    ..default()
+                }),
             ViewportPlugin,
             ProjectnamePlugin,
         ))
@@ -29,7 +48,7 @@ impl Plugin for ViewportPlugin {
 }
 
 fn camera_setup(mut commands: Commands, _asset_server: Res<AssetServer>) {
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn((Name::new("Camera"), Camera2dBundle::default()));
 }
 
 fn field_setup(_commands: Commands, _asset_server: Res<AssetServer>) {}
