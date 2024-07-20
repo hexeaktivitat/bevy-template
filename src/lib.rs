@@ -4,10 +4,12 @@ use bevy::prelude::*;
 use bevy_console::ConsoleCommand;
 use clap::Parser;
 use input::{InputPlugin, InputSet};
+use loading::{LoadingPlugin, LoadingSet};
 use menu::{MenuPlugin, MenuSet, PauseSet};
 use player::{PlayerPlugin, PlayerSet};
 
 mod input;
+mod loading;
 mod menu;
 mod player;
 
@@ -27,10 +29,8 @@ impl Plugin for ProjectnamePlugin {
                 // .run_if(in_state(ApplicationState::Menu))
                 .run_if(in_state(ApplicationState::InGame)),
         );
-        app.configure_sets(
-            OnEnter(ApplicationState::Menu),
-            MenuSet.run_if(in_state(ApplicationState::Menu)),
-        );
+        app.configure_sets(OnEnter(ApplicationState::Menu), MenuSet);
+        app.configure_sets(OnEnter(ApplicationState::Loading), LoadingSet);
         app.configure_sets(
             Update,
             (
@@ -48,7 +48,7 @@ impl Plugin for ProjectnamePlugin {
         app.insert_resource(Time::<Fixed>::from_hz(60.0));
 
         // plugins
-        app.add_plugins((PlayerPlugin, MenuPlugin, InputPlugin));
+        app.add_plugins((PlayerPlugin, MenuPlugin, InputPlugin, LoadingPlugin));
 
         // systems
         app.add_systems(OnEnter(ApplicationState::Exit), exit_game);

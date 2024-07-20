@@ -2,10 +2,10 @@ use bevy::{input::keyboard::KeyCode, prelude::*};
 
 use crate::ApplicationState;
 
-pub struct PlayerPlugin;
+pub(super) struct PlayerPlugin;
 
 #[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct PlayerSet;
+pub(super) struct PlayerSet;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {

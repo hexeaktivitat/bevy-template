@@ -2,10 +2,10 @@ use bevy::prelude::*;
 
 use crate::{ApplicationState, PauseState};
 
-pub struct InputPlugin;
+pub(super) struct InputPlugin;
 
 #[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct InputSet;
+pub(super) struct InputSet;
 
 impl Plugin for InputPlugin {
     fn build(&self, app: &mut App) {

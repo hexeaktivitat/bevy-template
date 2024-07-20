@@ -6,12 +6,12 @@ use bevy::{
 use crate::{ApplicationState, PauseState};
 
 #[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct MenuSet;
+pub(super) struct MenuSet;
 
 #[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct PauseSet;
+pub(super) struct PauseSet;
 
-pub struct MenuPlugin;
+pub(super) struct MenuPlugin;
 
 impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
