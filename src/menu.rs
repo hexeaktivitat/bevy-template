@@ -16,10 +16,8 @@ pub struct MenuPlugin;
 impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(ApplicationState::Menu), menu_setup.in_set(MenuSet))
-            .add_systems(
-                Update,
-                (clear_menu, game_menu, interact_game_menu).in_set(MenuSet),
-            );
+            .add_systems(Update, (game_menu, interact_game_menu).in_set(MenuSet))
+            .add_systems(OnExit(ApplicationState::Menu), clear_menu.in_set(MenuSet));
         app.add_systems(OnEnter(PauseState::Paused), pause_screen.in_set(PauseSet))
             .add_systems(OnExit(PauseState::Paused), clear_pause.in_set(PauseSet));
     }
@@ -190,15 +188,9 @@ fn interact_game_menu(
     }
 }
 
-fn clear_menu(
-    mut commands: Commands,
-    mut query: Query<Entity, With<Node>>,
-    state: Res<State<ApplicationState>>,
-) {
-    if state.get() != &ApplicationState::Menu {
-        for entity in query.iter_mut() {
-            commands.entity(entity).despawn();
-        }
+fn clear_menu(mut commands: Commands, mut query: Query<Entity, With<Node>>) {
+    for entity in query.iter_mut() {
+        commands.entity(entity).despawn();
     }
 }
 
